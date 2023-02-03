@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  bdd:
+    container_name: mysql
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: serieApp
+      MYSQL_DATABASE: serieApp
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+  app:
+    container_name: app
+    image: callj/appsymfony
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app/
+
+
+volumes:
+  db-data:
