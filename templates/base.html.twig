@@ -12,7 +12,8 @@
     <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
     <title>{% block title %}Series!{% endblock %}</title>
 </head>
-<body><div class="container">
+<body>
+<div class="container">
     <header>
         <h1><a href="{{ path("main_index") }}"><img src="{{ asset("img/logo.svg") }}" alt="Series!"></a></h1>
         {% include("inc/nav.html.twig") %}
@@ -22,7 +23,7 @@
     </main>
     <footer>
         {% include("inc/nav.html.twig") %}
-        <div>&copy; {{ "now" | date("Y") }} Series!</div>
+        <div>&copy; {{ "now" | date("Y") }}</div>
     </footer>
 </div>
 </body>
