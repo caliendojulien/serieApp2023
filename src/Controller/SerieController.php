@@ -19,7 +19,8 @@ class SerieController extends AbstractController
         SerieRepository $serieRepository
     ): Response
     {
-        $series = $serieRepository->findBy([], ["popularity" => "DESC", "vote" => "DESC"], 30);
+//        $series = $serieRepository->findBy([], ["popularity" => "DESC", "vote" => "DESC"]);
+        $series = $serieRepository->findAllWithSeasons();
         return $this->render(
             'serie/list.html.twig',
             compact('series')

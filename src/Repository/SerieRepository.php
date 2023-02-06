@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Serie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,18 @@ class SerieRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findAllWithSeasons()
+    {
+        $queryBuilder = ($this->createQueryBuilder('s'))
+            ->leftJoin('s.seasons', 'seasons')
+            ->addSelect('seasons')
+            ->addOrderBy('s.popularity', 'DESC');
+        $query = $queryBuilder->getQuery();
+        $query->setMaxResults(10);
+        $paginator = new Paginator($query);
+        return $paginator;
     }
 
 //    /**
