@@ -48,7 +48,7 @@ class SerieController extends AbstractController
         $serie = new Serie();
         $serieForm = $this->createForm(SerieType::class, $serie);
         $serieForm->handleRequest($request);
-        if ($serieForm->isSubmitted()) {
+        if ($serieForm->isSubmitted() && $serieForm->isValid()) {
             $em->persist($serie);
             $em->flush();
             return $this->redirectToRoute('serie_list');

@@ -75,6 +75,4 @@ select {
     border-radius: 5px;
 }
 
-.flash-success {
-    background-color: lawngreen
-}
+.flash-success {background-color: lawngreen}

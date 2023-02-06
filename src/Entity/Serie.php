@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SerieRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: SerieRepository::class)]
 class Serie
@@ -14,6 +15,8 @@ class Serie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Le nom ne peut être blanc.')]
+    #[Assert\Length(min: 2, max: 255)]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
@@ -35,6 +38,7 @@ class Serie
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $firstAirDate = null;
 
+    #[Assert\GreaterThanOrEqual(propertyPath: "firstAirDate", message: 'Déso.')]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $lastAirDate = null;
 
