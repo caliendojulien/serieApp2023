@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/serie', name: 'serie')]
 class SerieController extends AbstractController
@@ -21,6 +22,7 @@ class SerieController extends AbstractController
     {
 //        $series = $serieRepository->findBy([], ["popularity" => "DESC", "vote" => "DESC"]);
         $series = $serieRepository->findAllWithSeasons();
+        $userConnecte = $this->getUser();
         return $this->render(
             'serie/list.html.twig',
             compact('series')
@@ -40,6 +42,7 @@ class SerieController extends AbstractController
         );
     }
 
+    #[isGranted('ROLE_USER')]
     #[Route('/create', name: '_create')]
     public function create(
         EntityManagerInterface $em,
