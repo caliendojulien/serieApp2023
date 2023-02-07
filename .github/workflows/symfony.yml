@@ -22,7 +22,7 @@ jobs:
       - name: PHP, extensions, composer
         uses: shivammathur/setup-php@v2
         with:
-            php-version: ${{ matrix.php-versions }}
+            php-version: 8.2.1
             extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
         env:
             update: true
