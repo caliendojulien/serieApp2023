@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Serie;
 use App\Form\SerieType;
 use App\Repository\SerieRepository;
+use App\Services\MailService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,12 +18,14 @@ class SerieController extends AbstractController
 {
     #[Route('/', name: '_list')]
     public function list(
-        SerieRepository $serieRepository
+        SerieRepository $serieRepository,
+        MailService     $mailService
     ): Response
     {
 //        $series = $serieRepository->findBy([], ["popularity" => "DESC", "vote" => "DESC"]);
         $series = $serieRepository->findAllWithSeasons();
         $userConnecte = $this->getUser();
+        $mailService->sendMail();
         return $this->render(
             'serie/list.html.twig',
             compact('series')
