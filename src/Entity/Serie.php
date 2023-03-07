@@ -51,7 +51,7 @@ class Serie
     private ?string $poster = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $tmdbId = null;
+    private ?int $tmdbd = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateCreated = null;
