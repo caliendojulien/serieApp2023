@@ -194,12 +194,12 @@ class Serie
 
     public function getTmdbId(): ?int
     {
-        return $this->tmdbId;
+        return $this->tmdbd;
     }
 
     public function setTmdbId(?int $tmdbId): self
     {
-        $this->tmdbId = $tmdbId;
+        $this->tmdbd = $tmdbId;
 
         return $this;
     }

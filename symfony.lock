@@ -56,6 +56,9 @@
             "ref": "b131e6cbfe1b898a508987851963fff485986285"
         }
     },
+    "liip/test-fixtures-bundle": {
+        "version": "2.6.0"
+    },
     "phpunit/phpunit": {
         "version": "10.0",
         "recipe": {
@@ -275,5 +278,17 @@
     },
     "twig/extra-bundle": {
         "version": "v3.5.0"
+    },
+    "zenstruck/foundry": {
+        "version": "1.29",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "1.10",
+            "ref": "37c2f894cc098ab4c08874b80cccc8e2f8de7976"
+        },
+        "files": [
+            "config/packages/zenstruck_foundry.yaml"
+        ]
     }
 }

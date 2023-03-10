@@ -2,32 +2,96 @@
 
 namespace App\Tests\Controller;
 
+use App\Repository\UserRepository;
+use Exception;
+use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
+use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class MainControllerTest extends WebTestCase
 {
-    /**
-     * On teste la présence des 4 liens sur la page d'accueil
-     */
-    public function testLinksOnNavbar(): void
-    {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
 
-        $this->assertResponseIsSuccessful();
-        $this->assertCount(7, $crawler->filter('a'));
+    private KernelBrowser $client;
+    private AbstractDatabaseTool $databaseTool;
+
+    public function urlsAnonymes(): \Generator
+    {
+        yield ['GET', '/'];
+        yield ['GET', '/serie/'];
+        yield ['GET', '/login'];
+        yield ['POST', '/register'];
+    }
+
+    public function urlsUtilisateur(): \Generator
+    {
+        yield ['GET', '/serie/create'];
     }
 
     /**
-     * On teste le fait d'arriver sur la page des series en cliquant sur le lien "Series"
+     * On vérifie si un utilisateur anonyme a accès a
+     * toutes les pages auquelles il devrait avoir accès
+     *
+     * @dataProvider urlsAnonymes
+     *
+     * @param string $methodeHttp méthode HTTP utilisée
+     * @param string $url url de destination
+     * @return void
      */
-    public function testSeriesLink(): void
+    public function testUrlsAnonymes(
+        string $methodeHttp,
+        string $url
+    ): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/');
-
+        $this->client->request($methodeHttp, $url);
         $this->assertResponseIsSuccessful();
-        $client->clickLink('Series');
-        $this->assertPageTitleSame('Series > All');
     }
+
+    /**
+     * On vérifie si un utilisateur anonyme est bien
+     * redirigé vers la page de login s'il tente
+     * d'accéder à la création de série
+     *
+     * @dataProvider urlsUtilisateur
+     *
+     * @param string $methodeHttp
+     * @param string $url
+     * @return void
+     */
+    public function testAccesInterdit(
+        string $methodeHttp,
+        string $url
+    ): void
+    {
+        $this->client->request($methodeHttp, $url);
+        $this->assertResponseRedirects('/login');
+    }
+
+    /**
+     * @dataProvider urlsUtilisateur
+     *
+     */
+    public function testAccesAutoriseApresLogin(
+        string $methodeHttp,
+        string $url
+    ): void
+    {
+        $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
+        $this->databaseTool->loadAllFixtures();
+        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@hotmail.fr']);
+        $this->client->loginUser($utilisateur);
+        $this->client->request($methodeHttp, $url);
+        $this->assertResponseIsSuccessful();
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->client = static::createClient();
+        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+    }
+
 }

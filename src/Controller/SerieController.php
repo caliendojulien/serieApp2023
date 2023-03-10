@@ -24,8 +24,8 @@ class SerieController extends AbstractController
     {
         $series = $serieRepository->findBy([], ["popularity" => "DESC", "vote" => "DESC"]);
 //        $series = $serieRepository->findAllWithSeasons();
-        $userConnecte = $this->getUser();
-        $mailService->sendMail();
+//        $userConnecte = $this->getUser();
+//        $mailService->sendMail();
         return $this->render(
             'serie/list.html.twig',
             compact('series')
