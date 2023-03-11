@@ -10,7 +10,7 @@ class SerieTest extends TestCase
 {
     private Serie $serie;
 
-    public function testSomething(): void
+    public function testGettersEtSetters(): void
     {
         $this->assertNull($this->serie->getId());
         $this->assertNotNull($this->serie->getDateModified());
@@ -25,7 +25,11 @@ class SerieTest extends TestCase
         $this->assertNotNull($this->serie->getPopularity());
         $this->assertNotNull($this->serie->getStatus());
         $this->assertNotNull($this->serie->getVote());
+        $saison = new Season();
+        $this->serie->addSeason($saison);
         $this->assertEquals(1, $this->serie->getSeasons()->count());
+        $this->serie->removeSeason($saison);
+        $this->assertEquals(0, $this->serie->getSeasons()->count());
     }
 
     protected function setUp(): void
@@ -43,8 +47,7 @@ class SerieTest extends TestCase
             ->setName('Game of thrones')
             ->setPopularity(5)
             ->setVote(5)
-            ->setStatus('En cours')
-            ->addSeason(new Season());
+            ->setStatus('En cours');
     }
 
 }
