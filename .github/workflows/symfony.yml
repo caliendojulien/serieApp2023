@@ -57,7 +57,7 @@ jobs:
       - name: Execution des tests
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/var/data.db
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --coverage-clover clover.xml
       - name: Execution du paquet sus-nommé
         run: vendor/bin/coverage-check clover.xml 1 --only-percentage > pourcentage.txt
       - name: Creation du badge
