@@ -1,30 +1,78 @@
-#name: Integration continue pour Symfony 6
-#on:
-#  push:
-#    branches:
-#      - master
-#jobs:
-#  symfony:
-#    name: Symfony 6
-#    runs-on: ubuntu-20.04
-#    services:
-#      mysql:
-#        image: mysql
-#        env:
-#          MYSQL_ROOT_PASSWORD: enieni
-#        ports:
-#          - 3306:3306
-#    strategy:
-#      fail-fast: true
-#    steps:
-#      - name: GitHub checkout
-#        uses: actions/checkout@v3
-#      - name: PHP, extensions, composer
-#        uses: shivammathur/setup-php@v2
-#        with:
-#            php-version: 8.2.1
-#            extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
-#        env:
-#            update: true
-#      - name: PHP version
-#        run: php -v
+name: Symfony
+
+on:
+  push:
+  pull_request:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  symfony-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+        with:
+          php-version: '8.2'
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref }}
+      - name: Création du fichier .env.local et .env.test.local
+        run: |
+          touch .env.local
+          touch .env.test.local
+          echo "DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" >> .env.test.local
+          echo "DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" >> .env.local
+          echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.local
+          echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.test.local
+      - name: Suppression du fichier composer.lock
+        run: rm composer.lock
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Installation des dépendances
+        run: composer install
+      - name: Création de la base de données
+        run: php bin/console d:d:c --env=test
+      - name: Ajout des fixtures aux dépendances
+        run: composer require --dev orm-fixtures
+      - name: Mise a jour du schéma de la base de données
+        run: php bin/console d:s:u --force --env=test
+      - name: Chargement des fixtures
+        run: php bin/console d:f:l --env=test --no-interaction
+      - name: Installation de tout ce qui concerne JavaScript
+        run: php -r "!file_exists('package.json') || exec('npm install');"
+      - name: Construction du dossier "public"
+        run: php -r "!file_exists('package.json') || exec('npm run dev');"
+      - name: Ajout du paquet phpunit-coverage-check
+        run: composer req --dev rregeer/phpunit-coverage-check
+      - name: Execution des tests
+        env:
+          DATABASE_URL: sqlite:///%kernel.project_dir%/var/data.db
+        run: vendor/bin/phpunit
+      - name: Execution du paquet sus-nommé
+        run: vendor/bin/coverage-check clover.xml 1 --only-percentage > pourcentage.txt
+      - name: Creation du badge
+        run: |
+          echo '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="108" height="20" role="img"><linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="r"><rect width="108" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#r)"><rect width="63" height="20" fill="#555"/><rect x="63" width="45" height="20" fill="#e05d44"/><rect width="108" height="20" fill="url(#s)"/></g><g fill="#fff" text-anchor="middle" font-family="Verdana,Geneva,DejaVu Sans,sans-serif" text-rendering="geometricPrecision" font-size="110"><text aria-hidden="true" x="315" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="530">coverage</text><text x="315" y="140" transform="scale(.1)" fill="#fff" textLength="530">coverage</text><text aria-hidden="true" x="850" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="350">' > badge.svg
+          head -c 2 pourcentage.txt >> badge.svg
+          echo " %" >> badge.svg
+          echo '</text><text x="850" y="140" transform="scale(.1)" fill="#fff" textLength="350">' >> badge.svg
+          head -c 2 pourcentage.txt >> badge.svg
+          echo " %" >> badge.svg
+          echo '</text></g></svg>' >> badge.svg
+          rm pourcentage.txt
+          rm clover.xml
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: MaJ du badge de couverture de code
+          commit_user_name: GitHub CI/CD
+          commit_author: Alan Turing <actions@github.com>
