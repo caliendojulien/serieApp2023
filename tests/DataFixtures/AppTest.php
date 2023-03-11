@@ -14,11 +14,11 @@ class AppTest extends WebTestCase
     private AbstractDatabaseTool $databaseTool;
     private KernelBrowser $client;
 
-    public function testSomething(): void
+    public function testFixtures(): void
     {
         $this->databaseTool->loadAllFixtures();
         $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
-        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@hotmail.fr']);
+        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@eni.fr']);
         $this->assertNotNull($utilisateur);
     }
 

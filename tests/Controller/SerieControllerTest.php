@@ -22,7 +22,7 @@ class SerieControllerTest extends WebTestCase
     public function testCreationSerie(): void
     {
         $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
-        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@hotmail.fr']);
+        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@eni.fr']);
         $series = $this->client->getContainer()->get(SerieRepository::class);
         $nbSeries = $series->count([]);
         $this->client->loginUser($utilisateur);

@@ -35,7 +35,7 @@ class Season
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $dateModified = null;
 
-    #[ORM\ManyToOne(inversedBy: 'seasons')]
+    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'seasons')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Serie $serie = null;
 

@@ -13,8 +13,6 @@ class MainControllerTest extends WebTestCase
 
     private KernelBrowser $client;
 
-//    private AbstractDatabaseTool $databaseTool;
-
     public function urlsAnonymes(): Generator
     {
         yield "Page d'accueil" => ['GET', '/'];
@@ -26,6 +24,36 @@ class MainControllerTest extends WebTestCase
     public function urlsUtilisateur(): Generator
     {
         yield "Page de création des séries" => ['GET', '/serie/create'];
+    }
+
+    public function urlsAdmin(): Generator
+    {
+        yield "Page d'administration" => ['GET', '/admin'];
+    }
+
+
+    /**
+     * On vérifie si un admin a accès a
+     * /admin
+     *
+     * @dataProvider urlsAdmin
+     *
+     * @param string $methodeHttp méthode HTTP utilisée
+     * @param string $url url de destination
+     * @return void
+     */
+    public function testUrlsAAdmin(
+        string $methodeHttp,
+        string $url
+    ): void
+    {
+        $this->client->request($methodeHttp, $url);
+        $this->assertResponseRedirects('/login');
+        $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
+        $admin = $utilisateurs->findOneBy(['email' => 'admin@eni.fr']);
+        $this->client->loginUser($admin);
+        $this->client->request($methodeHttp, $url);
+        $this->assertResponseIsSuccessful();
     }
 
     /**
@@ -43,6 +71,9 @@ class MainControllerTest extends WebTestCase
         string $url
     ): void
     {
+        $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
+        $admin = $utilisateurs->findOneBy(['email' => 'admin@eni.fr']);
+        $this->client->loginUser($admin);
         $this->client->request($methodeHttp, $url);
         $this->assertResponseIsSuccessful();
     }
@@ -77,11 +108,16 @@ class MainControllerTest extends WebTestCase
     ): void
     {
         $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
-//        $this->databaseTool->loadAllFixtures();
-        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@hotmail.fr']);
+        $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@eni.fr']);
         $this->client->loginUser($utilisateur);
         $this->client->request($methodeHttp, $url);
         $this->assertResponseIsSuccessful();
+    }
+
+    public function testLogout(): void
+    {
+        $this->client->request('GET', '/logout');
+        $this->assertResponseRedirects('');
     }
 
     /**
@@ -91,6 +127,5 @@ class MainControllerTest extends WebTestCase
     {
         parent::setUp();
         $this->client = static::createClient();
-//        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 }

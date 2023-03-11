@@ -15,3 +15,4 @@
 ###< symfony/phpunit-bridge ###
 coverage
 composer.lock
+clover.xml

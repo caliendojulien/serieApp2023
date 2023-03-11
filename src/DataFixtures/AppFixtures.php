@@ -18,9 +18,14 @@ class AppFixtures extends Fixture
 //        $manager->getConnection()->exec($sql);
         UserFactory::createMany(10);
         UserFactory::createOne([
-            'email' => 'caliendo@hotmail.fr',
+            'email' => 'caliendo@eni.fr',
             'password' => '$2y$13$mD5O/di4/RjFxQBWLrPNvO8JkPq9oSUt8pi0jBqv3IeM4w2GA/..u',
             'roles' => []
+        ]);
+        UserFactory::createOne([
+            'email' => 'admin@eni.fr',
+            'password' => '$2y$13$mD5O/di4/RjFxQBWLrPNvO8JkPq9oSUt8pi0jBqv3IeM4w2GA/..u',
+            'roles' => ['ROLE_ADMIN']
         ]);
         SeasonFactory::createMany(10);
         ResetPasswordRequestFactory::createOne();
