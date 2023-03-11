@@ -4,8 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Repository\UserRepository;
 use Exception;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
+use Generator;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -13,19 +12,20 @@ class MainControllerTest extends WebTestCase
 {
 
     private KernelBrowser $client;
-    private AbstractDatabaseTool $databaseTool;
 
-    public function urlsAnonymes(): \Generator
+//    private AbstractDatabaseTool $databaseTool;
+
+    public function urlsAnonymes(): Generator
     {
-        yield ['GET', '/'];
-        yield ['GET', '/serie/'];
-        yield ['GET', '/login'];
-        yield ['POST', '/register'];
+        yield "Page d'accueil" => ['GET', '/'];
+        yield "Page de la liste des séries" => ['GET', '/serie/'];
+        yield "Page de login" => ['GET', '/login'];
+        yield "Page d'inscription" => ['GET', '/register'];
     }
 
-    public function urlsUtilisateur(): \Generator
+    public function urlsUtilisateur(): Generator
     {
-        yield ['GET', '/serie/create'];
+        yield "Page de création des séries" => ['GET', '/serie/create'];
     }
 
     /**
@@ -77,7 +77,7 @@ class MainControllerTest extends WebTestCase
     ): void
     {
         $utilisateurs = $this->client->getContainer()->get(UserRepository::class);
-        $this->databaseTool->loadAllFixtures();
+//        $this->databaseTool->loadAllFixtures();
         $utilisateur = $utilisateurs->findOneBy(['email' => 'caliendo@hotmail.fr']);
         $this->client->loginUser($utilisateur);
         $this->client->request($methodeHttp, $url);
@@ -91,7 +91,6 @@ class MainControllerTest extends WebTestCase
     {
         parent::setUp();
         $this->client = static::createClient();
-        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
+//        $this->databaseTool = static::getContainer()->get(DatabaseToolCollection::class)->get();
     }
-
 }

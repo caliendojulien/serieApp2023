@@ -1,30 +1,30 @@
-name: Integration continue pour Symfony 6
-on:
-  push:
-    branches:
-      - master
-jobs:
-  symfony:
-    name: Symfony 6
-    runs-on: ubuntu-20.04
-    services:
-      mysql:
-        image: mysql
-        env:
-          MYSQL_ROOT_PASSWORD: enieni
-        ports:
-          - 3306:3306
-    strategy:
-      fail-fast: true
-    steps:
-      - name: GitHub checkout
-        uses: actions/checkout@v3
-      - name: PHP, extensions, composer
-        uses: shivammathur/setup-php@v2
-        with:
-            php-version: 8.2.1
-            extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
-        env:
-            update: true
-      - name: PHP version
-        run: php -v
+#name: Integration continue pour Symfony 6
+#on:
+#  push:
+#    branches:
+#      - master
+#jobs:
+#  symfony:
+#    name: Symfony 6
+#    runs-on: ubuntu-20.04
+#    services:
+#      mysql:
+#        image: mysql
+#        env:
+#          MYSQL_ROOT_PASSWORD: enieni
+#        ports:
+#          - 3306:3306
+#    strategy:
+#      fail-fast: true
+#    steps:
+#      - name: GitHub checkout
+#        uses: actions/checkout@v3
+#      - name: PHP, extensions, composer
+#        uses: shivammathur/setup-php@v2
+#        with:
+#            php-version: 8.2.1
+#            extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, iconv, json, mbstring
+#        env:
+#            update: true
+#      - name: PHP version
+#        run: php -v
