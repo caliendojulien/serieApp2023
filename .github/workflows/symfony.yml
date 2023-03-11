@@ -29,7 +29,7 @@ jobs:
           echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.local
           echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.test.local
       - name: Suppression du fichier composer.lock
-        run: rm composer.lock
+        run: php -r "!file_exists('composer.lock') || exec('rm composer.lock');"
       - name: Cache Composer packages
         id: composer-cache
         uses: actions/cache@v3
