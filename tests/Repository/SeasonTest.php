@@ -11,7 +11,7 @@ class SeasonTest extends KernelTestCase
 {
     private ObjectManager $entityManager;
 
-    public function testAjoutSuppSerie(): void
+    public function testAjoutSuppSaison(): void
     {
         $nbSaison = count($this->entityManager->getRepository(Season::class)->findAll());
         $nouvelleSaison = (new Season())

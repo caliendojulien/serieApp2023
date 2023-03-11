@@ -20,6 +20,12 @@ class SerieTest extends KernelTestCase
         $this->assertSame($nbSerie, count($this->entityManager->getRepository(Serie::class)->findAll()));
     }
 
+    public function testAllWithSeasons(): void
+    {
+        $nbSaisons = count($this->entityManager->getRepository(Serie::class)->findAllWithSeasons());
+        $this->assertSame(10, $nbSaisons);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
