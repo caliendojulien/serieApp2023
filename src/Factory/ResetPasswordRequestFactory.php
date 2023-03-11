@@ -39,6 +39,11 @@ final class ResetPasswordRequestFactory extends ModelFactory
         parent::__construct();
     }
 
+    protected static function getClass(): string
+    {
+        return ResetPasswordRequest::class;
+    }
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
      *
@@ -49,7 +54,7 @@ final class ResetPasswordRequestFactory extends ModelFactory
         return [
             'expiresAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'hashedToken' => self::faker()->text(100),
-            'requestedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
+//            'requestedAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
             'selector' => self::faker()->text(20),
             'user' => UserFactory::new(),
         ];
@@ -60,13 +65,7 @@ final class ResetPasswordRequestFactory extends ModelFactory
      */
     protected function initialize(): self
     {
-        return $this
-            // ->afterInstantiate(function(ResetPasswordRequest $resetPasswordRequest): void {})
-        ;
-    }
-
-    protected static function getClass(): string
-    {
-        return ResetPasswordRequest::class;
+        return $this// ->afterInstantiate(function(ResetPasswordRequest $resetPasswordRequest): void {})
+            ;
     }
 }

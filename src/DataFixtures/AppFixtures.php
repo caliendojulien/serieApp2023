@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Factory\ResetPasswordRequestFactory;
 use App\Factory\SeasonFactory;
 use App\Factory\UserFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -22,5 +23,6 @@ class AppFixtures extends Fixture
             'roles' => []
         ]);
         SeasonFactory::createMany(10);
+        ResetPasswordRequestFactory::createOne();
     }
 }
