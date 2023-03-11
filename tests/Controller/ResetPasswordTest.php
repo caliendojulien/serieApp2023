@@ -19,6 +19,15 @@ class ResetPasswordTest extends WebTestCase
         $this->assertResponseRedirects('/reset-password/check-email');
     }
 
+    public function testResetPasswordFauxUtilisateur(): void
+    {
+        $this->client->request('GET', '/reset-password');
+        $this->client->submitForm('Send password reset email', [
+            'reset_password_request_form[email]' => 'faux@eni.fr'
+        ]);
+        $this->assertResponseRedirects('/reset-password/check-email');
+    }
+
     public function testResetUrlAvecToken(): void
     {
         $this->client->request('GET', '/reset-password/reset/abc123');
